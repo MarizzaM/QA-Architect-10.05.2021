@@ -42,21 +42,17 @@ public class CustomerDAO {
     }
 
     public Customer getCustomerById(int id){
-        // try to connect to db
+
         try (Connection conn = DriverManager.getConnection(m_conn)) {
-            // check if connection succeed
+
             if (conn != null) {
 
-                // prepare query string
                 String sql = String.format("Select * from Customer where id = %d", id );
 
-                // prepare statement
                 Statement stmt = conn.createStatement();
 
-                // fire query
                 ResultSet rs = stmt.executeQuery(sql);
 
-                // read results
                 while (rs.next()) {
                     Customer e = new Customer(
                             rs.getInt("Id"),
@@ -70,9 +66,56 @@ public class CustomerDAO {
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
         return null;
-
     }
 
+    public void insertCustomer(Customer c) {
+
+        try (Connection conn = DriverManager.getConnection(m_conn)) {
+            if (conn != null) {
+
+                String sql = String.format("INSERT INTO Customer (NAME, stars, birth_year)" +
+                        "VALUES ( '%s', %f, %d)", c.getName(), c.getStars(), c.getBirth_year());
+                Statement stmt = conn.createStatement();
+
+                stmt.executeUpdate(sql);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void updateCustomer(Customer c, int id) {
+
+        try (Connection conn = DriverManager.getConnection(m_conn)) {
+            if (conn != null) {
+
+                String sql = String.format("UPDATE Customer set NAME = '%s',stars = %f, birth_year = %d " +
+                        "where Customer.id = %d", c.getName(), c.getStars(), c.getBirth_year(), id);
+                Statement stmt = conn.createStatement();
+
+                stmt.executeUpdate(sql);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void deleteCustomer(int id) {
+
+        try (Connection conn = DriverManager.getConnection(m_conn)) {
+            if (conn != null) {
+
+                String sql = String.format("Delete from Customer where Customer.id = %d", id );
+                Statement stmt = conn.createStatement();
+
+                stmt.executeUpdate(sql);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
